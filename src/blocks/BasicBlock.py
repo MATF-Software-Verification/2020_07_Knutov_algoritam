@@ -8,6 +8,11 @@ class BasicBlock:
         self.id = b_id
         self.type = b_type
 
+    def __eq__(self, other):
+        return self.id == other.get_id() and self.type == other.get_type() and self.lead == other.get_lead()
+
+    def __str__(self):
+        return self.lead + " " + str(self.id) + " " + str(self.type)
     def add_instruction(self, instruction):
         self.instructions.append(instruction)
 

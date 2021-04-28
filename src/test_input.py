@@ -30,4 +30,6 @@ elif a < 10:
 elif a > 10:
     b = 3
 
+
+print(c)
 c = 13

@@ -15,6 +15,11 @@ class InputProgram:
                 instructions.append(instruction)
         return instructions
 
+    def get_instructions(self):
+        return self.instructions
+    def get_basic_blocks(self):
+        return self.basic_blocks
+
     def divide_into_basic_blocks(self, instructions):
         leaders = self.get_leaders(instructions)
         basic_blocks = []
@@ -24,23 +29,32 @@ class InputProgram:
 
         leaders_size = len(leaders)
         for i in range(1, leaders_size):
-            cl_in_instructions = instructions.index(current_leader) if current_leader in instructions else -1
-            nl_in_instructions = instructions.index(next_leader) if next_leader in instructions else -1
+            cl_in_instructions = instructions.index(
+                current_leader) if current_leader in instructions else -1
+            nl_in_instructions = instructions.index(
+                next_leader) if next_leader in instructions else -1
 
             if i == 0:
-                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ROOT))
+                basic_blocks.append(BasicBlock(
+                    current_leader, i, BasicBlock.BlockType.ROOT))
             elif 'for ' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.FOR))
+                basic_blocks.append(BasicBlock(
+                    current_leader, i, BasicBlock.BlockType.FOR))
             elif 'elif ' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ELIF))
+                basic_blocks.append(BasicBlock(
+                    current_leader, i, BasicBlock.BlockType.ELIF))
             elif 'if ' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.IF_THEN))
+                basic_blocks.append(BasicBlock(
+                    current_leader, i, BasicBlock.BlockType.IF_THEN))
             elif 'else:' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ELSE))
+                basic_blocks.append(BasicBlock(
+                    current_leader, i, BasicBlock.BlockType.ELSE))
             elif self.num_function_calls(current_leader) > 0:
-                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.FUNCTION))
+                basic_blocks.append(BasicBlock(
+                    current_leader, i, BasicBlock.BlockType.FUNCTION))
             else:
-                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ORDINARY))
+                basic_blocks.append(BasicBlock(
+                    current_leader, i, BasicBlock.BlockType.ORDINARY))
 
             if -1 == cl_in_instructions:
                 return basic_blocks
@@ -54,8 +68,10 @@ class InputProgram:
             if i < leaders_size - 1:
                 next_leader = leaders[i + 1]
 
-        basic_blocks.append(BasicBlock(next_leader, i + 1, BasicBlock.BlockType.ORDINARY))
-        nl_in_instructions = instructions.index(next_leader) if next_leader in instructions else -1
+        basic_blocks.append(BasicBlock(next_leader, i + 1,
+                                       BasicBlock.BlockType.ORDINARY))
+        nl_in_instructions = instructions.index(
+            next_leader) if next_leader in instructions else -1
         for instruction in instructions[nl_in_instructions:]:
             basic_blocks[-1].add_instruction(instruction)
 
@@ -66,17 +82,22 @@ class InputProgram:
         control_flow_changers = ['if', 'else', 'elif', 'for']
 
         num_tabs = 0
-        for i in range(len(instructions)):
+        for i in range(1,len(instructions)):
             instruction = instructions[i]
 
             function_call_occurs = self.num_function_calls(instruction)
             num_tabs_prev = num_tabs
             num_tabs = self.calculate_tabs(instruction)
-            if any(cfc in instruction for cfc in control_flow_changers) or 0 != function_call_occurs:
+            if any(cfc in instruction for cfc in control_flow_changers) or 0 != function_call_occurs: # appends leadrs if, elif, else, for and function
                 leaders.append(instruction)
-                if i + 1 != len(instructions):
+                if i + 1 != len(instructions): # appends leader of a block inside of function, if, elif, else, for
+                    # TODO
+                    # problem when we have function call after function call
+                    # print(a)
+                    # print(b)
+                    # leaderes would be print(a), print(b), print(b)
                     leaders.append(instructions[i+1])
-            elif num_tabs_prev > num_tabs:
+            elif num_tabs_prev > num_tabs: # appends leader of a block that exists if,else,elif, function  block
                 leaders.append(instruction)
 
         return leaders
@@ -104,7 +125,7 @@ class InputProgram:
                 # break marker should be calculated
 
                 rev_block_info = block_info[::-1]
-                for info in rev_block_info: # TODO, this will only work for code with one indent
+                for info in rev_block_info:  # TODO, this will only work for code with one indent
                     if info[0] in ['IF_THEN', 'ELSE', 'ELIF']:
                         break_marker = 1
                         break
@@ -112,7 +133,8 @@ class InputProgram:
                         break_marker = 2
                         break
 
-            current_block_info = [block.type.name, block.id, break_marker, False]
+            current_block_info = [block.type.name,
+                                  block.id, break_marker, False]
 
             block_info.append(current_block_info)
 
