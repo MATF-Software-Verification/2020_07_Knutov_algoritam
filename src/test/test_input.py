@@ -1,4 +1,3 @@
-
 a = 10
 b = 2
 
@@ -13,4 +12,5 @@ for i in range(10):
         break
 
 print(a)
+print(b)
 c = 1

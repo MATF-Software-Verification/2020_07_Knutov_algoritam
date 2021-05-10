@@ -25,7 +25,9 @@ class InputProgram:
         basic_blocks = []
 
         current_leader = leaders[0]
-        next_leader = leaders[1]
+        next_leader = None
+        if len(leaders) > 1: # if program containes only one block
+            next_leader = leaders[1]
 
         leaders_size = len(leaders)
         for i in range(1, leaders_size):
@@ -68,12 +70,17 @@ class InputProgram:
             if i < leaders_size - 1:
                 next_leader = leaders[i + 1]
 
-        basic_blocks.append(BasicBlock(next_leader, i + 1,
+        if next_leader != None: # check if program containes only one block (leader)
+            basic_blocks.append(BasicBlock(next_leader, i + 1,
                                        BasicBlock.BlockType.ORDINARY))
-        nl_in_instructions = instructions.index(
+            nl_in_instructions = instructions.index(
             next_leader) if next_leader in instructions else -1
-        for instruction in instructions[nl_in_instructions:]:
-            basic_blocks[-1].add_instruction(instruction)
+            for instruction in instructions[nl_in_instructions:]:
+                basic_blocks[-1].add_instruction(instruction)
+        else:
+            basic_blocks.append(BasicBlock(leaders[0], 1,
+                                           BasicBlock.BlockType.ORDINARY))
+
 
         return basic_blocks
 
@@ -82,13 +89,13 @@ class InputProgram:
         control_flow_changers = ['if', 'else', 'elif', 'for']
 
         num_tabs = 0
-        for i in range(1,len(instructions)):
+        for i in range(1, len(instructions)):
             instruction = instructions[i]
 
             function_call_occurs = self.num_function_calls(instruction)
             num_tabs_prev = num_tabs
             num_tabs = self.calculate_tabs(instruction)
-            if any(cfc in instruction for cfc in control_flow_changers) or 0 != function_call_occurs: # appends leadrs if, elif, else, for and function
+            if any(cfc in instruction for cfc in control_flow_changers) or function_call_occurs: # appends leadrs if, elif, else, for and function
                 leaders.append(instruction)
                 if i + 1 != len(instructions): # appends leader of a block inside of function, if, elif, else, for
                     # TODO
@@ -96,6 +103,8 @@ class InputProgram:
                     # print(a)
                     # print(b)
                     # leaderes would be print(a), print(b), print(b)
+                    if function_call_occurs and (not self.is_function_definition(instruction)):
+                        continue
                     leaders.append(instructions[i+1])
             elif num_tabs_prev > num_tabs: # appends leader of a block that exists if,else,elif, function  block
                 leaders.append(instruction)
@@ -145,4 +154,6 @@ class InputProgram:
 
     def num_function_calls(self, instruction):
         # ^(?!def)
-        return len(re.findall(r'(\w|\_)+\([\w\s\d|,]*\)', instruction.strip(), re.IGNORECASE))
+        return re.fullmatch(r'(\w|\_)+\([\w\s\d|,]*\)', instruction.strip(), re.IGNORECASE) != None
+    def is_function_definition(self, instruction):
+        return re.match(r'def (\w|\_)+\([\w\s\d|,]*\)', instruction.strip(), re.IGNORECASE) != None
