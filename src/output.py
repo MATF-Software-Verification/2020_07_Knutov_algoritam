@@ -56,5 +56,6 @@ elif a > 10:
     b = 3
 # -END BLOCK id: 16
 # -BEGIN BLOCK id: 17 type: ordinary
+print(c)
 c = 13
 # -END BLOCK id: 17

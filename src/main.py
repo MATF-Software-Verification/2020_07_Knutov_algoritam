@@ -1,5 +1,4 @@
 import sys
-import os
 from pathlib import Path
 
 sys.path.insert(1, '../')
@@ -10,7 +9,6 @@ from utils.Graph import CFG
 from utils.Knuth import Knuth
 
 def activate(code):
-    block_stack = []
     blocks = []
 
     input_program = InputProgram(code)
@@ -22,7 +20,6 @@ def activate(code):
         blocks.append(block)
         block_id += 1
 
-    from pprint import pprint
     cfg = CFG(block_stack)
 
     graph = cfg.getGraph()
@@ -35,16 +32,18 @@ def activate(code):
 
 
 def main():
+# checks the validity of test_input.py file
     if not check_validity(Path('./test_input.py')):
         print('Input code not valid', file=sys.stderr)
         sys.exit(1)
 
-    code = []
     with open(Path('./test_input.py'), 'r') as input_file:
         code = input_file.read()
 
-    blocks = activate(code)
+# devide code into list of BasicBlock elements
+    blocks = activate(code)[0]
 
+#fills the output file by calling the stringify_block() function over each block
     with open(Path('./output.py'), 'w') as output:
         for block in blocks:
             output.write(block.stringify_block())

@@ -31,6 +31,9 @@ class BasicBlock:
     def get_lead(self):
         return self.lead
 
+# overwrites the BasicBlock to the output.py file by putting:
+# BEGIN BLOCK, id and type at the beginning
+# END BLOCK and id at the end of each one of them
     def stringify_block(self):
         ret_str = f"# -BEGIN BLOCK id: {self.get_id()} type: {self.get_type().value}\n"
         for instr in self.instructions:

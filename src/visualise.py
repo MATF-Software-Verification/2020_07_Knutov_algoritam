@@ -3,9 +3,6 @@
 import tkinter as tk
 import math
 from pathlib import Path
-
-
-import numpy
 from main import activate
 
 windowWidth = 750
