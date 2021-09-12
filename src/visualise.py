@@ -126,26 +126,34 @@ def deleteAllLinks(canvas, links):
 class mainWindow:
     def __init__(self, root):
         self.root = root
-        #kod iz fajla
-        self.codeText= self.setCodeText()
+
+        #this list contains names of all test fies avalible
+        #if you write new test file you need to include its name into this list
+        #and then you will be able to choose that file to test
+        testFilesAvailable = {"block_test.py", "if_test.py", "test_input.py", "for_test.py"}
+
         #error labela (pritiskom na clear code pa na submit -> syntax error ...)
         self.errorLabel = tk.Label(root, fg='red', justify=tk.LEFT)
-
-        self.codeText.update()
-        codeTextWidth = self.codeText.winfo_width()
+        codeTextWidth = 625
+        i=1
+        for fileName in testFilesAvailable:
+                btnFile = tk.Button(root, text = fileName, width=12,
+                                 command = (lambda text=fileName: self.chooseFile(text)))
+                btnFile.place(x=20+codeTextWidth , rely =(10+60*i)/windowWidth)
+                i+=1
 
         #dugme za submit, pritiskom izvrsava submitData()
-        btn = tk.Button(root, text="Submit code", command=(lambda: self.submitData()))
-        btn.place(x=20+codeTextWidth, rely=10/windowHeight)
+        btn = tk.Button(root, text="Submit code", width=12, command=(lambda: self.submitData()))
+        btn.place(x=20+codeTextWidth, rely=(280)/windowHeight)
 
         # Set clear button
         # dugme za clear, pritiskom izvrsava clear()
-        btn = tk.Button(root, text="Clear code", command=(lambda: self.clear()))
-        btn.place(x=20+codeTextWidth, rely=50/windowHeight)
+        btn = tk.Button(root, text="Clear code", width=12, command=(lambda: self.clear()))
+        btn.place(x=20+codeTextWidth, rely=(310)/windowHeight)
 
         # dugme za generate, pritiskom izvrsava openNewWindow()
-        btn = tk.Button(root, text="Generate canvas", command=(lambda: self.openNewWindow()))
-        btn.place(x=20+codeTextWidth, rely=90/windowHeight)
+        btn = tk.Button(root, text="Generate canvas", width=12, command=(lambda: self.openNewWindow()))
+        btn.place(x=20+codeTextWidth, rely=(340)/windowHeight)
 
 
     #brise text iz dela gde je kod i lebele za greske
@@ -153,8 +161,13 @@ class mainWindow:
         self.codeText.delete('1.0', tk.END)
         self.errorLabel.place_forget()
 
+
+    def chooseFile(self, fileName):
+        self.codeText = self.setCodeText(fileName)
+        self.codeText.update()
+
     #cita primer koda iz fajla
-    def setCodeText(self):
+    def setCodeText(self, fileName):
         # setup the text input
         #zakucan broj linija prozora
         numOfLines = 80
@@ -163,9 +176,9 @@ class mainWindow:
         scroll = tk.Scrollbar(self.root, command=codeText.yview)
         codeText.configure(yscrollcommand=scroll.set)
         #proporcija prozora za text
-        codeText.place(relx=10/windowWidth, rely=10/windowHeight)
+        codeText.place(height = 400-windowHeight/10, width = 600, relx=10/windowWidth, rely=10/windowHeight)
         #zakucan primer za submitovanje
-        test_file = open(Path("test_input.py"), 'r')
+        test_file = open(Path(fileName), 'r')
         #na kraju prozora za text upisuje se primer(inicijalno je kraj na pocetku)
         codeText.insert(tk.END, test_file.read())
         return codeText
