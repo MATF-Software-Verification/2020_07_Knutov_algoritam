@@ -103,6 +103,7 @@ class InputProgram:
                     # print(a)
                     # print(b)
                     # leaderes would be print(a), print(b), print(b)
+                    # problem solved now its printing print(a) print(b)
                     if function_call_occurs and (not self.is_function_definition(instruction)):
                         continue
                     leaders.append(instructions[i+1])
@@ -130,10 +131,13 @@ class InputProgram:
             num_tabs = self.calculate_tabs(block.lead)
             break_marker = 0
 
+            # exiting block
             if num_tabs_prev > num_tabs and block.type in break_types:
                 # break marker should be calculated
 
                 rev_block_info = block_info[::-1]
+                # compute what block jumps to this block
+                # break_marker defines what type of block it was
                 for info in rev_block_info:  # TODO, this will only work for code with one indent
                     if info[0] in ['IF_THEN', 'ELSE', 'ELIF']:
                         break_marker = 1
@@ -155,5 +159,6 @@ class InputProgram:
     def num_function_calls(self, instruction):
         # ^(?!def)
         return re.fullmatch(r'(\w|\_)+\([\w\s\d|,]*\)', instruction.strip(), re.IGNORECASE) != None
+
     def is_function_definition(self, instruction):
         return re.match(r'def (\w|\_)+\([\w\s\d|,]*\)', instruction.strip(), re.IGNORECASE) != None

@@ -4,6 +4,8 @@ from copy import copy
 class CFG():
     def __init__(self, block_stack):
         self.graph = self.generate_graph(block_stack)
+        self.tree = self.spanning_tree()
+        self.block_stack = block_stack
         # self.graph = {
         #     1: [[2, 10]],
         #     2: [[4, 5], [3, 5]],
@@ -28,6 +30,8 @@ class CFG():
 
     def getGraph(self):
         return self.graph
+    def getTree(self):
+        return self.tree
 
     def generate_graph(self, blocks):
         graph = {}
@@ -89,7 +93,8 @@ class CFG():
                 j = block_id
 
                 # while loop is connecting if-block with it's else or elif block or block that follows - breaks when it finds first
-                while (True):
+                # change : while j < len(blocks)
+                while (j < len(blocks)):
                     #     # if blocks[j][0] == 'if':
                     #         # if_counters += 1
                     if blocks[j][0] in ['ELSE', 'ELIF'] or blocks[j][2] == 1:
@@ -113,9 +118,13 @@ class CFG():
                 # idi u napred i nadji decu sa kojom nisi povezan
                 # if_counters = 0
                 j = block_id
-                while (True):  # connects current block to ELSE or ELIF block or block that follows IF-THEN condition - breaks when it finds first
+                # block_id is from 1 to number of nodes
+                # blocks[i] is from 0 to number of nodes - 1
+                # add while j < len(blocks)
+                while (j<len(blocks)):  # connects current block to ELSE or ELIF block or block that follows IF-THEN condition - breaks when it finds first
                     #     # if blocks[j][0] == 'if':
                     #         # if_counters += 1
+
                     if blocks[j][0] in ['ELSE', 'ELIF'] or blocks[j][2] == 1:
                         if [blocks[j][1], 1] not in graph[block_id]:
                             graph[block_id].append([blocks[j][1], 1])
@@ -214,3 +223,28 @@ class CFG():
                     inverse[src_node].append([dest_node, weight])
 
         return inverse
+
+    def isCyclicUtil(self, v, visited, parent):
+        visited[v] = True
+        for dest, weight in self.tree[v]:
+            if visited[dest] == False:
+                if self.isCyclicUtil(dest, visited, v) == True:
+                    return True
+            elif dest != parent:
+                return True
+
+        return False
+    def isTree(self):
+        visited = {}
+        visited["START"] = False
+        visited["EXIT"] = False
+        for block in self.block_stack:
+            visited[block[1]] = False
+
+        if self.isCyclicUtil("EXIT", visited, -1) == True:
+            return False
+
+        for node in self.tree:
+            if visited[node] == False:
+                return False
+        return True
