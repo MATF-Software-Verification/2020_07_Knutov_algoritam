@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce38879f-e265-4021-9c0a-671cdec86849" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/InputProgram.py" beforeDir="false" afterPath="$PROJECT_DIR$/InputProgram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/for_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/for_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_input.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_input.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/Graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/Graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualise.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualise.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +36,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.gutterIcons" />
   </component>
-  <component name="RunManager" selected="Python.test_cfg">
+  <component name="RunManager" selected="Python.visualise">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -133,8 +130,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test_cfg" />
         <item itemvalue="Python.visualise" />
+        <item itemvalue="Python.test_cfg" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python tests.Unittests in test_cfg.py" />
         <item itemvalue="Python tests.Unittests for test_cfg.TestCFG.test_divide_into_basic_blocks" />
