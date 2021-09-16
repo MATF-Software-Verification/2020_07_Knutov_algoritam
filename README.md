@@ -52,7 +52,7 @@ python visualise.py
 
 ## :mortar_board: Authors
 
-* **Jovana Bošković** - [jovana]()
+* **Jovana Bošković** - [jboskovic](https://github.com/jboskovic)
 
 * **Veronika Miljaković** -  [veronika1996](https://github.com/veronika1996)
 
