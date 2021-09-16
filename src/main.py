@@ -30,27 +30,3 @@ def activate(code):
     
     return [blocks, graph, spanning_tree, inv_spanning_tree, calculate_weights_steps]
 
-
-def main():
-# checks the validity of test_input.py file
-    if not check_validity(Path('./test_input.py')):
-        print('Input code not valid', file=sys.stderr)
-        sys.exit(1)
-
-    with open(Path('./test_input.py'), 'r') as input_file:
-        code = input_file.read()
-
-# devide code into list of BasicBlock elements
-    blocks = activate(code)[0]
-
-#fills the output file by calling the stringify_block() function over each block
-    with open(Path('./output.py'), 'w') as output:
-        for block in blocks:
-            output.write(block.stringify_block())
-            output.write('\n')
-
-        output.flush()
-
-
-if __name__ == '__main__':
-    main()
