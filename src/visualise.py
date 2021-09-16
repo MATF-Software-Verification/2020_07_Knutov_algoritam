@@ -1,11 +1,10 @@
 # runnable class
-
+import sys
 import tkinter as tk
 import math
 from pathlib import Path
 from main import activate
-
-
+from src.checker import check_validity
 
 windowWidth = 800
 windowHeight = 400
@@ -212,8 +211,33 @@ class mainWindow:
 
 
     def chooseFile(self, fileName):
+        # when fileName is empty that means that user is writing his own example so content of fileName is empty
+        if(fileName != ""):
+            self.showWhatSubmit(fileName)
+
         self.codeText = self.setCodeText(fileName)
         self.codeText.update()
+
+    # checks validity of a file and shows in output.py file what will be if you submit
+    def showWhatSubmit(self, fileName):
+        # checks the validity of test_input.py file
+        if not check_validity(Path(fileName)):
+            print('Input code not valid', file=sys.stderr)
+            sys.exit(1)
+
+        with open(Path(fileName), 'r') as input_file:
+            code = input_file.read()
+
+        # devide code into list of BasicBlock elements
+        blocks = activate(code)[0]
+
+        # fills the output file by calling the stringify_block() function over each block
+        with open(Path('./output.py'), 'w') as output:
+            for block in blocks:
+                output.write(block.stringify_block())
+                output.write('\n')
+
+            output.flush()
 
     # read an example code from "fileName"
     def setCodeText(self, fileName):
