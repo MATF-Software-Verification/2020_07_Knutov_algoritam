@@ -312,8 +312,7 @@ class mainWindow:
         # the number of weights to add
         numOfSteps = len(self.list)
         if(i < numOfSteps):
-
-            deleteAllLinks(self.canvas, self.lines)
+            #deleteAllLinks(self.canvas, self.lines)
             self.lines = drawLinks(self.canvas, self.positions, self.list[i], linesInvColor ,True)
             self.nextBtn.place_forget()
             self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težinu za sledeću granu" , command=(lambda: self.drawList(i+1)))
