@@ -1,9 +1,7 @@
 import sys
-from pathlib import Path
 
 sys.path.insert(1, '../')
 from InputProgram import InputProgram
-from checker import check_validity
 
 from utils.Graph import CFG
 from utils.Knuth import Knuth
