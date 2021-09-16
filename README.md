@@ -54,7 +54,7 @@ python visualise.py
 
 * **Jovana Bošković** - [jovana]()
 
-* **Veronika Miljaković** -  [veronika]()
+* **Veronika Miljaković** -  [veronika1996](https://github.com/veronika1996)
 
 * **Milica Galjak** -  [milicagaljak](https://github.com/milicagaljak)
 
