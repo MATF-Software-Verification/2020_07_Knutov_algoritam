@@ -1,4 +1,4 @@
-#runnable klasa
+# runnable class
 
 import tkinter as tk
 import math
@@ -38,7 +38,8 @@ def onWeightClick(event, arg):
 
 
 
-#ne koristi se nigde, pravi string od instrukcija bloka koji je prosledjen
+
+# not used, makes string with forwarded block instructions
 def getInstructionsText(block):
     text = ""
     for instr in block.get_instructions():
@@ -46,7 +47,7 @@ def getInstructionsText(block):
         text += '\n'
     return text
 
-#crta cvor
+# draws node
 def createNode(x, y, r, nodeText, canvasName):
     x0 = x - r
     y0 = y - r
@@ -56,8 +57,7 @@ def createNode(x, y, r, nodeText, canvasName):
     canvasName.create_oval(x0, y0, x1, y1, fill=nodeColor, outline=nodeBorderColor, width=2)
     return canvasName.tag_raise(text)
 
-#MOZE SE UNAPREDITI, da se postavi da lepse crta tezine i grane
-#canvas crta granu od begining cvora do end cvora za weigth tezinom
+# draws a branch from the beginning to the end with a weigth "weigth" by canvas
 def createLink(begining, end, weigth, canvasName, color, putWeigths = True):
 
     Ax,Ay = begining
@@ -93,15 +93,14 @@ def createLink(begining, end, weigth, canvasName, color, putWeigths = True):
 
     return canvasName.create_line(newx1, newy1, newx2, newy2, arrow=tk.LAST, fill=color, activefill=lineActiveColor)
 
-#MOZE SE UNAPREDITI, pozicije cvorova
-#crta cvorove i vraca njihove pozicije
+# draws nodes and returns their positions
 def drawGraph(canvas, graph):
 
     positions = {}
     heightFromTop = 60
-    #dodeljuje pozicije cvorova
+    # gives positions of nodes
     for k,v in graph.items():
-        #velicina cvora
+        # size of node
         size = 20
         if(k in [1,2]):
             currentX = canvasWidth/2
@@ -140,29 +139,29 @@ def drawGraph(canvas, graph):
             currentX = heightFromTop * 11
             currentY = float(canvasWidth)/20 * k-17
 
-        #crta cvor
+        # draws a node
         createNode(currentX, currentY, size, k, canvas)
         positions[k] = (currentX, currentY)
     
     return positions
 
-#vraca listu veza(grana) izmedju cvorova
+# returns a branch between nodes
 def drawLinks(canvas, positions, graph, color ,drawWeights=True):
 
     links = []
     for k,v in graph.items():
         try:
-            #cvor od koja pocinje grana (1(pocetni) : [2 (krajnji cvor),10 (tezina)])
+            # node from the begin of the branch (1(initial node) : [2 (end node),10 (weigth)])
             startDimesions = positions[k]
             for item in v:
-                #cvor u koji ulazi grana
+                # branch enters into this node
                 endDimensions = positions[item[0]]
                 links.append(createLink(startDimesions, endDimensions,item[1], canvas, color, drawWeights))
         except:
             print("Not found")
     return links
 
-#brise grane grafa
+# delete all branches
 def deleteAllLinks(canvas, links):
     for line in links:
         canvas.delete(line)
@@ -171,13 +170,14 @@ class mainWindow:
     def __init__(self, root):
         self.root = root
 
-        #this list contains names of all test fies avalible
-        #if you write new test file you need to include its name into this list
-        #and then you will be able to choose that file to test
+        # this list contains names of all test files available
+        # if you write new test file you need to include its name into this list
+        # and then you will be able to choose that file to test
         testFilesAvailable = ["block_test.py", "if_test.py", "test_input.py", "for_test.py", "write example"]
 
-        #error labela (pritiskom na clear code pa na submit -> syntax error ...)
-        self.errorLabel = tk.Label(root, fg='red', justify=tk.LEFT)
+        # error label (pressing on clear code button than on submit button -> syntax error ...)
+        self.errorLabel = tk.Label(root, fg='red', justify=tk.CENTER)
+
         codeTextWidth = 625
         i=1
         for fileName in testFilesAvailable:
@@ -191,21 +191,21 @@ class mainWindow:
                 btnFile.place(x=20+codeTextWidth , rely =(10+60*i)/windowWidth)
                 i+=1
 
-        #dugme za submit, pritiskom izvrsava submitData()
+        # submit button, press to execute submitData()
         btn = tk.Button(root, text="Submit code", width=12, command=(lambda: self.submitData()))
         btn.place(x=20+codeTextWidth, rely=(280)/windowHeight)
 
         # Set clear button
-        # dugme za clear, pritiskom izvrsava clear()
+        # clear button, press to execute clear()
         btn = tk.Button(root, text="Clear code", width=12, command=(lambda: self.clear()))
         btn.place(x=20+codeTextWidth, rely=(310)/windowHeight)
 
-        # dugme za generate, pritiskom izvrsava openNewWindow()
+        # generate button, press to execute openNewWindow()
         btn = tk.Button(root, text="Generate canvas", width=12, command=(lambda: self.openNewWindow()))
         btn.place(x=20+codeTextWidth, rely=(340)/windowHeight)
 
 
-    #brise text iz dela gde je kod i lebele za greske
+    # delete text from code label and error label
     def clear(self):
         self.codeText.delete('1.0', tk.END)
         self.errorLabel.place_forget()
@@ -215,91 +215,93 @@ class mainWindow:
         self.codeText = self.setCodeText(fileName)
         self.codeText.update()
 
-    #cita primer koda iz fajla
+    # read an example code from "fileName"
     def setCodeText(self, fileName):
         # setup the text input
-        #zakucan broj linija prozora
+        # hard-coded a number of window lines
         numOfLines = 80
         codeText = tk.Text(self.root, width=numOfLines)
 
         scroll = tk.Scrollbar(self.root, command=codeText.yview)
         codeText.configure(yscrollcommand=scroll.set)
-        #proporcija prozora za text
+        # proportion of a window for text
         codeText.place(height = 400-windowHeight/10, width = 600, relx=10/windowWidth, rely=10/windowHeight)
-        #zakucan primer za submitovanje
+        # hard-coded example for submitting
         if fileName != "":
             test_file = open(Path(fileName), 'r')
-            #na kraju prozora za text upisuje se primer(inicijalno je kraj na pocetku)
+            # at the end of the text window writes an example
             codeText.insert(tk.END, test_file.read())
         else:
             # if file isnt sent then you should write you own example
             codeText.insert(tk.END, "")
         return codeText
 
-    # menja opis i naslov grafa
+    # modifies a description and a title of the graph
     def changeGrapthTextTitle(self, text, title):
         self.graphTitle['text'] = title
         self.graphDescription.delete(1.0, tk.END)
         self.graphDescription.insert(1.0, text)
 
-    #definisanje opisa i naslova grafa
+    # description and title initialization
     def drawGraphTextAndTitle(self, text, title):
         self.graphDescription = tk.Text(self.graphWindow, width=32, wrap=tk.WORD, bg=bgTextColor)
         self.graphTitle = tk.Label(self.graphWindow,font=titleStyle, text=title, bg=bgTextColor)
         self.graphDescription.place(x=canvasWidth+10, y=150)
         self.graphTitle.place(x=canvasWidth+ 10, y = 50)
         self.graphDescription.insert(tk.END, text)
-        #self.graphDescription.configure(state='disabled')
+        # self.graphDescription.configure(state='disabled')
 
-    #crtanje grafa
+    # draws a graph
     def drawControlFlowGraph(self):
         cfgDesc = "Od generisanih blokova u kodu konstruiše se Graf kontrole toka. Dodaju se START i EXIT čvorovi da bi dobijen graf bio povezan"
-        #opis grafa i naslov
+        # description and title
         self.drawGraphTextAndTitle(cfgDesc, "Graf kontrole toka")
-        #crta grane cfg-a (false znaci da nece crtati tezine)
+        # draws links of the control flow graph (false means draw witout weights)
         self.lines = drawLinks(self.canvas, self.positions, self.graph, linesGraphColor , False)
-        #dugme za generisanje razapinjuceg stabla, pritiskom se poziva drawSpanningTree()
+        # button for generating spanning tree , pressing executes drawSpanningTree()
         self.nextBtn = tk.Button(self.graphWindow, text="Generiši razapinjujuće stablo", command=(lambda: self.drawSpanningTree()))
         self.nextBtn.place(x=canvasWidth+20, y=650)
 
-    #crta razapinjuce stablo
+    # draws spanning tree
     def drawSpanningTree(self):
         sptDesc = "Razapinjuće stablo grafa kontrole toka. Dobija se primenom DFS algoritma gde je kao početni čvor izabran EXIT."
-        #opis i naslov
+        # description and title
         self.changeGrapthTextTitle(sptDesc, "Razapinjuće stablo")
-        #brise sve grane
+        # delete all branches
         deleteAllLinks(self.canvas, self.lines)
-        #crta grane razapinjuceg grafa (false znaci da nece crtati tezine)
+
+        # draws links of spanning tree (false means don't add and draw weights)
         self.lines = drawLinks(self.canvas, self.positions, self.spanning_tree, linesTreeColor, False)
-        #brise konfiguraciju za nextBtn i postavlja novu, pritiskom izvrsava self.drawInverseSpaningTreeNoWeights()
+        # delete configuration for nextBtn and set new, pressing nextBtn executes self.drawInverseSpaningTreeNoWeights()
         self.nextBtn.place_forget()
         self.nextBtn = tk.Button(self.graphWindow, text="Generiši inverz stabla", command=(lambda: self.drawInverseSpaningTreeNoWeights()))
         self.nextBtn.place(x=canvasWidth+20, y=650)
 
-    #crta inverzni graf bez tezina
+    # draw inverse graph without weights
     def drawInverseSpaningTreeNoWeights(self):
         sptDesc = "Sve grane koje se nalaze u razapinjućem stablu se uklanjaju. Na osnovu preostalih grana i njihovih težina će se izračunati težine uklonjenih grana. Na mesto preostalih grana se u kodu postavljaju brojači."
-        #opis i naslov
+        # description and title
         self.changeGrapthTextTitle(sptDesc, "Uklanjanje stabla")
-        #brise prethodno nacrtane grane
+        # delete drawn links
         deleteAllLinks(self.canvas, self.lines)
-        #crta grane inverza bez tezina
+        # draw inverse graph without weights
         self.lines = drawLinks(self.canvas, self.positions, self.inv_spanning_tree, linesInvColor, False)
-        #brise konfiguraciju za dugme i dodaje novu, pritiskom izvrsava metodu drawInverseSpaningTree()
+        # delete configuration for button and set new, pressing button executes drawInverseSpaningTree()
+
         self.nextBtn.place_forget()
         self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težine", command=(lambda: self.drawInverseSpaningTree()))
         self.nextBtn.place(x=canvasWidth+20, y=650)
 
-    # crta inverzni graf sa tezinama
+    # draws inverse graph with weights
     def drawInverseSpaningTree(self):
         sptDesc = "Izvršavanje koda sa brojačima. Vrednost brojača se postavlja kao težina grane i predstavlja broj puta koliko je ta grana izvršena u izvršavanja programa."
-        #opis i naslov
+        # description and title
         self.changeGrapthTextTitle(sptDesc, "Dodavanje težina granama")
-        #brise grane
+        # delete drawn links
         deleteAllLinks(self.canvas, self.lines)
-        #crta grane inverznog grafa sa tezinama
+        # draws links with weights
         self.lines = drawLinks(self.canvas, self.positions, self.inv_spanning_tree, linesInvColor, True)
-        # brise konfiguraciju za dugme i dodaje novu, pritiskom izvrsava metodu drawList(0) - dodaje tezine sa ostale grane(jednu po jednu)
+        #delete configuration for button and set new,  pressing button executes drawList(0) - adds weights for the other links
         self.nextBtn.place_forget()
         self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težine za ostale grane", command=(lambda: self.drawList(0)))
         self.nextBtn.place(x=canvasWidth+20, y=650)
@@ -307,7 +309,7 @@ class mainWindow:
     def drawList(self, i):
         sptDesc = "Poslednji korak u kome se dodeljuju težine svim granama u grafu u odnosu na težine grana koje ne pripadaju razapinjucem stablu."
         self.changeGrapthTextTitle(sptDesc, "Dodavanje težina ostalim \n granama")
-        #broj tezina koje treba da se dodaju
+        # the number of weights to add
         numOfSteps = len(self.list)
         if(i < numOfSteps):
 
@@ -320,16 +322,16 @@ class mainWindow:
             self.nextBtn.place_forget()
 
 
-    #otvara prozor za vizuelizaciju algoritma
+    # opens window for visualisation
     def openNewWindow(self): 
         self.newWindow = tk.Toplevel(bg=bgTopLevelColor)
         self.newWindow.title("Vizuelizacija knutovog algoritma")
         self.newWindow.geometry("1280x700")
         self.graphWindow = self.newWindow
 
-        #postavlja odgovarajuce parametre za crtanje: dimenzije,boju,prozor za crtanje
+        # set parameters for drawing: dimensions,color,drawing window
         self.canvas = tk.Canvas(self.graphWindow, bg=bgCanvasColor, height=canvasHeight, width=canvasWidth)
-        #prosledjuje graf za crtanje, vraca pozicije cvorova cfg-a
+        # forwarded graph, returs positions of a control flow graph
         self.positions = drawGraph(self.canvas, self.graph)
         
         # draw graph
@@ -337,20 +339,20 @@ class mainWindow:
         self.canvas.pack(side=tk.LEFT)
   
 
-    #dobija od activate metode: blokove koda, graf, razapinjuci, njegov inverz, listu tezina grana
+    # received from activate method: code blocks, graph, spanning tree, inverse, list of weights
     def submitData(self):
-        #encoding koda koji je procitan iz fajla
+        # encoding code from the file
         input = self.codeText.get("1.0",'end-1c')
         codeTextWidth = self.codeText.winfo_width()
         try:
-            #vraca blokove koda, graf, razapinjuci, njegov inverz, listu tezina grana
+            # returns code blocks, graph, spanning tree, inverse, list of weights
             blocks, graph, spanning_tree, inv_spanning_tree, calculate_weights_steps = activate(input)
         except Exception as e:
             self.errorLabel['text'] = "Syntax error: \n" + str(e)
-            self.errorLabel.place(x=20+codeTextWidth, rely=100/windowHeight)
+            self.errorLabel.place(x=30+codeTextWidth, y=100/windowHeight)
             return
 
-        #kada submituje kod metodi activate, obrise kod iz prozora i postavi odgovarajuce komenatre za svaki blok(na pocetku i na kraju bloka)
+        # when the code is submitted, delete code from the window and add comments for every block(at the beginning and at the end)
         self.codeText.delete('1.0', tk.END)
         for block in blocks:
             self.codeText.insert(tk.END, block.stringify_block())
@@ -364,16 +366,16 @@ class mainWindow:
         self.list = calculate_weights_steps
 
 
-#pocetak programa
+# START
 if __name__ == '__main__':
-    #root je konstruktor biblioteke tkinter
+    # root - constructor of tkinter
     root = tk.Tk()
-    #zadajemo velicinu prozora
+    # set dimensions of the window
     root.geometry(str(windowWidth) + 'x' + str(windowHeight))
-    #app je instanca klase mainWindow koja dobija u svom konstruktoru root
+    # app is instance of mainWindow class, we forwarded root in constructor
     app = mainWindow(root)
-    #naslov
+    # title
     app.root.title("Knutov algoritam")
-    #pokrece se root
+    # execute root
     root.mainloop()
 
