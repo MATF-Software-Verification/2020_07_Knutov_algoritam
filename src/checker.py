@@ -1,7 +1,7 @@
 import ast
 import traceback
 
-#function that is used in main.py to check the validity of input code
+#function that is used to check the validity of input code
 #it returns True if input code is valid or False if it's not
 def check_validity(input_file):
     with open(input_file) as f:

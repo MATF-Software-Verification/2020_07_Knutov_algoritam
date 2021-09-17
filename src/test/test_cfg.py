@@ -9,21 +9,25 @@ from utils.Graph import CFG
 
 from InputProgram import InputProgram
 from blocks.BasicBlock import BasicBlock
-with open(Path('../test_input.py'), 'r') as input_file:
+with open(Path('../testCasses/test_input.py'), 'r') as input_file:
     code = input_file.read()
 input_program = InputProgram(code)
 
-with open(Path('../block_test.py'), 'r') as input_file:
+with open(Path('../testCasses/block_test.py'), 'r') as input_file:
     code_block = input_file.read()
 input_code_block = InputProgram(code_block)
 
-with open(Path('../for_test.py'), 'r') as input_file:
+with open(Path('../testCasses/for_test.py'), 'r') as input_file:
     code_for = input_file.read()
 input_code_for = InputProgram(code_for)
 
-with open(Path('../if_test.py'), 'r') as input_file:
+with open(Path('../testCasses/if_test.py'), 'r') as input_file:
     code_if = input_file.read()
 input_code_if = InputProgram(code_if)
+
+with open(Path('../testCasses/test.py'), 'r') as input_file:
+    code_test = input_file.read()
+input_code_test = InputProgram(code_test)
 
 
 

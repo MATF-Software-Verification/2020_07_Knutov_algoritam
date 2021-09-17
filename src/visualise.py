@@ -172,7 +172,7 @@ class mainWindow:
         # this list contains names of all test files available
         # if you write new test file you need to include its name into this list
         # and then you will be able to choose that file to test
-        testFilesAvailable = ["block_test.py", "if_test.py", "test_input.py", "for_test.py", "write example"]
+        testFilesAvailable = ["block_test.py", "if_test.py", "test_input.py", "for_test.py","test.py", "write example"]
 
         # error label (pressing on clear code button than on submit button -> syntax error ...)
         self.errorLabel = tk.Label(root, fg='red', justify=tk.CENTER)
@@ -221,11 +221,12 @@ class mainWindow:
     # checks validity of a file and shows in output.py file what will be if you submit
     def showWhatSubmit(self, fileName):
         # checks the validity of test_input.py file
-        if not check_validity(Path(fileName)):
+        file_path = "./testCasses/" + fileName
+        if not check_validity(file_path):
             print('Input code not valid', file=sys.stderr)
             sys.exit(1)
 
-        with open(Path(fileName), 'r') as input_file:
+        with open(Path(file_path), 'r') as input_file:
             code = input_file.read()
 
         # devide code into list of BasicBlock elements
@@ -252,7 +253,8 @@ class mainWindow:
         codeText.place(height = 400-windowHeight/10, width = 600, relx=10/windowWidth, rely=10/windowHeight)
         # hard-coded example for submitting
         if fileName != "":
-            test_file = open(Path(fileName), 'r')
+            file_path = "./testCasses/" + fileName
+            test_file = open(Path(file_path), 'r')
             # at the end of the text window writes an example
             codeText.insert(tk.END, test_file.read())
         else:
