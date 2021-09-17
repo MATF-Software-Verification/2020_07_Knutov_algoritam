@@ -1,7 +1,6 @@
 from blocks.BasicBlock import BasicBlock
 import re
 
-
 class InputProgram:
     def __init__(self, code):
         self.instructions = self.make_instructions(code)
@@ -81,7 +80,6 @@ class InputProgram:
             basic_blocks.append(BasicBlock(leaders[0], 1,
                                            BasicBlock.BlockType.ORDINARY))
 
-
         return basic_blocks
 
     def get_leaders(self, instructions):
@@ -103,6 +101,7 @@ class InputProgram:
                     # print(a)
                     # print(b)
                     # leaderes would be print(a), print(b), print(b)
+
                     # problem solved now its printing print(a) print(b)
                     if function_call_occurs and (not self.is_function_definition(instruction)):
                         continue
@@ -115,7 +114,6 @@ class InputProgram:
     def get_block_stack(self):
         block_info = []
         num_tabs = 0
-        num_tabs_prev = 0
 
         # these types will be used for marking
         break_types = [

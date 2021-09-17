@@ -1,6 +1,5 @@
 import enum
 
-
 class BasicBlock:
     def __init__(self, lead, b_id, b_type):
         self.lead = lead

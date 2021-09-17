@@ -35,9 +35,6 @@ def onWeightClick(event, arg):
     canvas.itemconfigure(id, text= num )
 
 
-
-
-
 # not used, makes string with forwarded block instructions
 def getInstructionsText(block):
     text = ""
