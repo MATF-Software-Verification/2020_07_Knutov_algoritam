@@ -33,6 +33,15 @@ def onWeightClick(event, arg):
     num = canvas.itemcget(id,'text')
     num = int(num) +1
     canvas.itemconfigure(id, text= num )
+    endNode = arg[2]
+    startNode = arg[3]
+    mainWindowObject = arg[4]
+    print(mainWindowObject.graph)
+    for neighbor in mainWindowObject.graph[startNode]:
+        if neighbor[0] == endNode:
+            neighbor[1] = num
+
+    print(mainWindowObject.graph)
 
 
 # not used, makes string with forwarded block instructions
@@ -54,8 +63,8 @@ def createNode(x, y, r, nodeText, canvasName):
     return canvasName.tag_raise(text)
 
 # draws a branch from the beginning to the end with a weigth "weigth" by canvas
-def createLink(begining, end, weigth, canvasName, color, putWeigths = True):
 
+def createLink(begining, end, weigth, canvasName, color, endNode, startNode, mainWindow ,putWeigths = True):
     Ax,Ay = begining
     Bx, By = end
     d = math.sqrt((Bx-Ax)**2 + (By-Ay)**2)    
@@ -85,7 +94,10 @@ def createLink(begining, end, weigth, canvasName, color, putWeigths = True):
             textX = (textY-n2)/k2
 
         weightObj = canvasName.create_text((textX, textY), text=str(weigth), fill=weigthTextColor)
-        canvasName.tag_bind(weightObj, '<Double-1>', lambda event, arg=[canvasName,weightObj]: onWeightClick(event,arg))
+        canvasName.tag_bind(weightObj, '<Double-1>', lambda event, arg=[canvasName, weightObj, endNode, startNode, mainWindow]: onWeightClick(event,arg))
+
+
+
 
     return canvasName.create_line(newx1, newy1, newx2, newy2, arrow=tk.LAST, fill=color, activefill=lineActiveColor)
 
@@ -142,7 +154,7 @@ def drawGraph(canvas, graph):
     return positions
 
 # returns a branch between nodes
-def drawLinks(canvas, positions, graph, color ,drawWeights=True):
+def drawLinks(canvas, positions, graph, color, mainWindow ,drawWeights=True):
 
     links = []
     for k,v in graph.items():
@@ -152,7 +164,7 @@ def drawLinks(canvas, positions, graph, color ,drawWeights=True):
             for item in v:
                 # branch enters into this node
                 endDimensions = positions[item[0]]
-                links.append(createLink(startDimesions, endDimensions,item[1], canvas, color, drawWeights))
+                links.append(createLink(startDimesions, endDimensions, item[1], canvas, color, item[0], k, mainWindow ,drawWeights))
         except:
             print("Not found")
     return links
@@ -280,7 +292,7 @@ class mainWindow:
         # description and title
         self.drawGraphTextAndTitle(cfgDesc, "Graf kontrole toka")
         # draws links of the control flow graph (false means draw witout weights)
-        self.lines = drawLinks(self.canvas, self.positions, self.graph, linesGraphColor , False)
+        self.lines = drawLinks(self.canvas, self.positions, self.graph, linesGraphColor, self ,False)
         # button for generating spanning tree , pressing executes drawSpanningTree()
         self.nextBtn = tk.Button(self.graphWindow, text="Generiši razapinjujuće stablo", command=(lambda: self.drawSpanningTree()))
         self.nextBtn.place(x=canvasWidth+20, y=650)
@@ -294,7 +306,7 @@ class mainWindow:
         deleteAllLinks(self.canvas, self.lines)
 
         # draws links of spanning tree (false means don't add and draw weights)
-        self.lines = drawLinks(self.canvas, self.positions, self.spanning_tree, linesTreeColor, False)
+        self.lines = drawLinks(self.canvas, self.positions, self.spanning_tree, linesTreeColor, self ,False)
         # delete configuration for nextBtn and set new, pressing nextBtn executes self.drawInverseSpaningTreeNoWeights()
         self.nextBtn.place_forget()
         self.nextBtn = tk.Button(self.graphWindow, text="Generiši inverz stabla", command=(lambda: self.drawInverseSpaningTreeNoWeights()))
@@ -308,9 +320,8 @@ class mainWindow:
         # delete drawn links
         deleteAllLinks(self.canvas, self.lines)
         # draw inverse graph without weights
-        self.lines = drawLinks(self.canvas, self.positions, self.inv_spanning_tree, linesInvColor, False)
+        self.lines = drawLinks(self.canvas, self.positions, self.inv_spanning_tree, linesInvColor, self ,False)
         # delete configuration for button and set new, pressing button executes drawInverseSpaningTree()
-
         self.nextBtn.place_forget()
         self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težine", command=(lambda: self.drawInverseSpaningTree()))
         self.nextBtn.place(x=canvasWidth+20, y=650)
@@ -323,7 +334,8 @@ class mainWindow:
         # delete drawn links
         deleteAllLinks(self.canvas, self.lines)
         # draws links with weights
-        self.lines = drawLinks(self.canvas, self.positions, self.inv_spanning_tree, linesInvColor, True)
+        self.lines = drawLinks(self.canvas, self.positions, self.inv_spanning_tree, linesInvColor, self ,True)
+
         #delete configuration for button and set new,  pressing button executes drawList(0) - adds weights for the other links
         self.nextBtn.place_forget()
         self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težine za ostale grane", command=(lambda: self.drawList(0)))
@@ -336,7 +348,8 @@ class mainWindow:
         numOfSteps = len(self.list)
         if(i < numOfSteps):
             #deleteAllLinks(self.canvas, self.lines)
-            self.lines = drawLinks(self.canvas, self.positions, self.list[i], linesInvColor ,True)
+            self.lines = drawLinks(self.canvas, self.positions, self.list[i], "pink", self ,True)
+
             self.nextBtn.place_forget()
             self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težinu za sledeću granu" , command=(lambda: self.drawList(i+1)))
             self.nextBtn.place(x=canvasWidth+20, y=650)
