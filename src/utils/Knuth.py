@@ -3,12 +3,22 @@ from pprint import pprint
 
 
 class Knuth():
-    def __init__(self, graph):
-        self.adjacency_list = graph.graph
-        self.spanning_tree = graph.spanning_tree()
+    def __init__(self, graph, spanning_tree=None):
+        if spanning_tree == None:
+            self.adjacency_list = graph.graph
+            self.spanning_tree = graph.spanning_tree()
+        else:
+            self.adjacency_list = graph
+            self.spanning_tree = spanning_tree
+            for node in self.spanning_tree:
+                for edge in self.spanning_tree[node]:
+                    edge[1] = 0
+
+
         self.calculate_weights_steps = []
 
-    
+
+
     def set_edge_weights(self):
         # create new adjacency list that will have weight for every edge
         # this will be the output
@@ -23,6 +33,7 @@ class Knuth():
                 if edge not in self.spanning_tree[node]:
                     self.adjacency_list_with_weights[node].append(copy(edge))
 
+
         spanning_tree_inverse_graph = deepcopy(self.adjacency_list_with_weights)
 
         # to emulate Knuth's algortihm
@@ -33,6 +44,7 @@ class Knuth():
                 edge_index = self.adjacency_list[node].index(edge)
                 self.adjacency_list[node][edge_index][1] = 0
 
+
         # get edge representation of the spanning tree (needed for the algorithm)
         spanning_tree_edges = self.get_edges(self.spanning_tree)
 
@@ -40,9 +52,6 @@ class Knuth():
         for edge in spanning_tree_edges:
             edge[2] = 0
 
-        # print('***')
-        # pprint(self.adjacency_list_with_weights)
-        # print('***')
         self.calculate_weights(spanning_tree_edges, 'START', None)
 
         return (
@@ -54,7 +63,8 @@ class Knuth():
     def calculate_weights(self, spanning_tree_edges, node, edge):
         edges_in = self.get_incoming_edges(node)
         edges_out = self.get_outgoing_edges(node)
-
+        #print(edges_in)
+        #print(edges_out)
         in_sum = 0
         for in_edge in edges_in:
             if in_edge != edge and in_edge in spanning_tree_edges:
@@ -71,6 +81,8 @@ class Knuth():
             edge[2] = max(in_sum, out_sum) - min(in_sum, out_sum)
             self.adjacency_list_with_weights[edge[0]].append([edge[1], edge[2]])
             self.calculate_weights_steps.append(deepcopy(self.adjacency_list_with_weights))
+        #print(self.calculate_weights_steps)
+
 
 
     def get_edges(self, graph=None):

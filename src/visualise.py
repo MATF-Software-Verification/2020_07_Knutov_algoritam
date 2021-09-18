@@ -5,6 +5,8 @@ import math
 from pathlib import Path
 from main import activate
 from src.checker import check_validity
+from utils.Knuth import Knuth
+
 
 windowWidth = 800
 windowHeight = 400
@@ -36,13 +38,15 @@ def onWeightClick(event, arg):
     endNode = arg[2]
     startNode = arg[3]
     mainWindowObject = arg[4]
-    print(mainWindowObject.graph)
-    for neighbor in mainWindowObject.inv_spanning_tree[startNode]:
+    for neighbor in mainWindowObject.graph[startNode]:
         if neighbor[0] == endNode:
             neighbor[1] = num
 
-    print(mainWindowObject.graph)
+    knuth = Knuth(mainWindowObject.graph, mainWindowObject.spanning_tree)
 
+    _, ls = knuth.set_edge_weights()
+    for i in range(0,len(mainWindowObject.list)):
+        mainWindowObject.list[i] = ls[i]
 
 # not used, makes string with forwarded block instructions
 def getInstructionsText(block):
@@ -93,13 +97,13 @@ def createLink(begining, end, weigth, canvasName, color, endNode, startNode, mai
             textY = textY - 5
             textX = (textY-n2)/k2
 
-        weightObj = canvasName.create_text((textX, textY), text=str(weigth), fill=weigthTextColor)
+        weightObj = canvasName.create_text((textX, textY), text=str(weigth), fill=weigthTextColor,activefill=lineActiveColor)
         canvasName.tag_bind(weightObj, '<Double-1>', lambda event, arg=[canvasName, weightObj, endNode, startNode, mainWindow]: onWeightClick(event,arg))
 
 
 
 
-    return canvasName.create_line(newx1, newy1, newx2, newy2, arrow=tk.LAST, fill=color, activefill=lineActiveColor)
+    return canvasName.create_line(newx1, newy1, newx2, newy2, arrow=tk.LAST, fill=color)
 
 # draws nodes and returns their positions
 def drawGraph(canvas, graph):
@@ -348,8 +352,7 @@ class mainWindow:
         numOfSteps = len(self.list)
         if(i < numOfSteps):
             #deleteAllLinks(self.canvas, self.lines)
-            self.lines = drawLinks(self.canvas, self.positions, self.list[i], "pink", self ,True)
-
+            self.lines = drawLinks(self.canvas, self.positions, self.list[i], linesInvColor, self ,True)
             self.nextBtn.place_forget()
             self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težinu za sledeću granu" , command=(lambda: self.drawList(i+1)))
             self.nextBtn.place(x=canvasWidth+20, y=650)
