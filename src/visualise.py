@@ -37,7 +37,7 @@ def onWeightClick(event, arg):
     startNode = arg[3]
     mainWindowObject = arg[4]
     print(mainWindowObject.graph)
-    for neighbor in mainWindowObject.graph[startNode]:
+    for neighbor in mainWindowObject.inv_spanning_tree[startNode]:
         if neighbor[0] == endNode:
             neighbor[1] = num
 
