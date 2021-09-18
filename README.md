@@ -1,19 +1,15 @@
 # Knuth algorithm visualisation improvements
 
-This program visualises the implementation of the Knuth algorithm, an algorithm used within the proccess of edge profiling. The implementation itself follows the paper that can be found on this [link](http://www.verifikacijasoftvera.matf.bg.ac.rs/vs/predavanja/03_dinamicka_analiza/03_NevenaNikolic_ProfajliranjeIvica.pdf).  The proccess consists the following steps:
+This program is tested version of the implementation of the Knuth algorithm, an algorithm used within the proccess of edge profiling. The program itself is work of our colleageus David Gavrilović and Nikola Dimić that can be found on this [link] (https://github.com/MATF-Software-Verification/2019_05_Knut_profajliranje_ivica_vizuelizacija). Algorithm has been improved with the following:
 
-* The ability to choose the code input (added test inputs)
-* Generating basic blocks from the code input
-* Making the control-flow graph from the generated blocks
-* Finding the spanning tree within the control-flow graph
-* Finding the spanning tree inverse
-* Adding the weights to the existing links
-* Finding all other neccesary weights based on the Knuth algorithm using Kirchoff's law
+* All the functions that are used for creating CFG and spanning tree are tested (errors are fixed)
+* Previous code only supported the predefinded input, now you can select from our collection or write your own code file
+* It supports any input with manual adding of the initial weights (weights are incremented by double clicking on the weight of an edge)
+* Visualisation of a graph is improved
+
 
 All of the steps are presented seperately.
 
-:warning: Currently the code only supports the predefinded input (v1.0)
-(soon will support any input but with manual adding of the initial weights)
 
  ## :computer: Getting started
 
@@ -45,6 +41,7 @@ python visualise.py
 2. Make sure that the code does not log any errors
 2. Generate canvas
 3. Procceed trough the steps using the next button
+4. You can change inverse tree initial weights by double click on them 
 
 
 ## :wrench: Built using
